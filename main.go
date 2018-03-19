@@ -266,13 +266,18 @@ func unGzipString(html string) (string, bool) {
 func needSaveImg(imgUrl, body string) bool {
 	// 图片宽或高小于40px，不保存
 	obj, _, err := image.DecodeConfig(bytes.NewReader([]byte(body)))
-	if err.Error() == "image: unknown format" {
-		return true
-	}
 
-	if err != nil || obj.Width <= 40 || obj.Height <= 40 {
+	if err != nil {
+		if err.Error() == "image: unknown format" {
+			return true
+		}
 		return false
 	}
+
+	if obj.Width <= 40 || obj.Height <= 40 {
+		return false
+	}
+
 	return true
 }
 
